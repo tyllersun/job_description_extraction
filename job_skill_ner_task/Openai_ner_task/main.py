@@ -28,7 +28,7 @@ output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 # One shot learning, prompt
 base_prompt = """
 把文章中提到的技能(skill)名稱(做NER用），按照順序放入"list of skill"中
-例如：Familiar in server side languages (C# .Net)則要取出：C#, .Net
+Question: Familiar in server side languages (C# .Net) Answer: {"skill": ["C#", ".Net"]}
 """
 
 # full prompt
