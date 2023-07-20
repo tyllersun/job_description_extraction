@@ -17,7 +17,7 @@ load_dotenv()
 openai.api_key  = os.getenv('openai_api_key')
 openai.api_base = os.getenv('openai_api_base')
 
-job_parsed = pd.read_csv("openai_job_description_extraction/data/meet_job_2023-06-29.csv")
+job_parsed = pd.read_csv("job_classification/openai_job_description_extraction/data/meet_job_2023-06-29.csv")
 
 # Add response schema
 response_schemas = [
@@ -74,5 +74,5 @@ for i in range(len(job_parsed)):
     output = chain.run(test_sentence)
     print(output)
     ner_pair = get_ner_pair(test_sentence, output["skill"])
-    append_dict_to_csv(ner_pair, 'Openai_ner_task/data/ner_data.csv')
+    append_dict_to_csv(ner_pair, 'job_skill_ner_task/Openai_ner_task/data/ner_data.csv')
 
