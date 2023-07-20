@@ -72,6 +72,13 @@ for i in range(len(job_parsed)):
         continue
 
     output = chain.run(test_sentence)
+
+    # Append list to a text file
+    with open('job_skill_ner_task/Openai_ner_task/data/skill_dict.txt', 'a') as f:
+        for value in output["skill"]:
+            f.write(value + '\t')
+        f.write('\n')
+
     print(output)
     ner_pair = get_ner_pair(test_sentence, output["skill"])
     append_dict_to_csv(ner_pair, 'job_skill_ner_task/Openai_ner_task/data/ner_data.csv')
