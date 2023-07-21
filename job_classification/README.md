@@ -10,3 +10,6 @@
 * 由於資料是由Scrapy抓取下來，並不像一般在Kaggle上的資料已經有標籤可以去做訓練。此外，由於是依據每句話貼標籤，較為繁瑣。
 * 由於爬取的是台灣的求職網站，因此在上面的語言多半以中文為主，但卻摻雜少量其他語言，因此模型亦須擴展到多語言皆可使用。這項要求除增加前處理的複雜程度，亦增加Tokenize的難度
 
+
+## 模型流程及架構
+<img width="9136" alt="Flow of JD classification model" src="https://github.com/tyllersun/job_description_extraction/assets/27050741/90fc82ab-b9ae-402f-b14d-c35e2579081a">
