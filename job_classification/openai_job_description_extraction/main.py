@@ -58,7 +58,7 @@ chain = SequentialChain(
 )
 
 # 輸入要做parsing的資料
-data = pd.read_csv("./data/meet_job_2023-06-29.csv")
+data = pd.read_csv("data/meet_job_2023-06-29.csv")
 
 
 
