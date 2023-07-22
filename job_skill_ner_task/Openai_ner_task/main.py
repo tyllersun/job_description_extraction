@@ -27,8 +27,9 @@ output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 
 # One shot learning, prompt
 base_prompt = """
-把文章中提到的技能(skill)名稱(做NER用），按照順序放入"list of skill"中
-例如：Familiar in server side languages (C# .Net)則要取出：C#, .Net
+範例：Question: Familiar in server side languages (C# .Net) Answer: {"skill": ["C#", ".Net"]}
+指令：把文章中提到的技能(skill)名稱(做NER用），按照順序放入"list of skill"中
+
 """
 
 # full prompt
@@ -74,7 +75,7 @@ for i in range(len(job_parsed)):
     output = chain.run(test_sentence)
 
     # Append list to a text file
-    with open('job_skill_ner_task/Openai_ner_task/data/skill_dict.txt', 'a') as f:
+    with open('job_skill_ner_task/Openai_ner_task/skill_set/skill_dict.txt', 'a') as f:
         for value in output["skill"]:
             f.write(value + '\t')
         f.write('\n')

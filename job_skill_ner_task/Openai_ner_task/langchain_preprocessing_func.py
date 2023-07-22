@@ -3,6 +3,8 @@ import os, csv
 
 
 def process_string(input_string):
+    if input_string is None:
+        return {"result": [""]}
     input_string = input_string["json_string"]
     json_string = input_string.strip().replace('\n', '').replace('\t', '')
     json_string = json_string.replace('```json', '').replace('```', '')
