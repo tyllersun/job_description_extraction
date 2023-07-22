@@ -75,7 +75,7 @@ for i in range(len(job_parsed)):
     output = chain.run(test_sentence)
 
     # Append list to a text file
-    with open('job_skill_ner_task/Openai_ner_task/data/skill_dict.txt', 'a') as f:
+    with open('job_skill_ner_task/Openai_ner_task/skill_set/skill_dict.txt', 'a') as f:
         for value in output["skill"]:
             f.write(value + '\t')
         f.write('\n')
