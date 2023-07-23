@@ -8,6 +8,7 @@ from datasets import load_metric
 from transformers import AutoTokenizer
 from transformers import AutoModelForTokenClassification, TrainingArguments, Trainer
 from transformers import DataCollatorForTokenClassification
+from job_skill_ner_task.Ner_model_task.label_list import label_list
 
 
 def tokenize_and_align_labels(examples):
@@ -103,11 +104,6 @@ def tokenize_and_align_labels(examples):
 
 train_dataset, test_dataset = get_un_token_dataset("job_skill_ner_task/Openai_ner_task/data", 0.7)
 
-label_list = [
-    'O',       # Outside of a named entity
-    'B-Skill',  # Beginning of a miscellaneous entity right after another miscellaneous entity
-    'I-Skill',  # Miscellaneous entity
-]
 
 label_encoding_dict = {'O':0, "B-Skill": 1, "I-Skill": 2}
 task = "ner"
