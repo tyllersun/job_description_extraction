@@ -1,4 +1,4 @@
-on: push
+on: pull_request
 name: Lint Python
 jobs:
   lint:
@@ -6,3 +6,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: cclauss/Find-Python-syntax-errors-action@master
+    
