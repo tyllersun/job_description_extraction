@@ -93,46 +93,9 @@ def get_un_token_dataset(directory, training_percentage):
     return train_dataset, test_dataset
 
 
-def tokenize_and_align_labels(examples):
-    label_all_tokens = True
-    tokenizer.truncation_side = "left"
-    tokenized_inputs = tokenizer(
-        list(examples["tokens"]), truncation=True, is_split_into_words=True
-    )
-
-    labels = []
-    for i, label in enumerate(examples[f"{task}_tags"]):
-        word_ids = tokenized_inputs.word_ids(batch_index=i)
-        previous_word_idx = None
-        label_ids = []
-        for word_idx in word_ids:
-            # Special tokens have a word id that is None. We set the label to -100 so they are automatically
-            # ignored in the loss function.
-            if word_idx is None:
-                label_ids.append(-100)
-            elif label[word_idx] == "0":
-                label_ids.append(0)
-            # We set the label for the first token of each word.
-            elif word_idx != previous_word_idx:
-                label_ids.append(label_encoding_dict[label[word_idx]])
-            # For the other tokens in a word, we set the label to either the current label or -100, depending on
-            # the label_all_tokens flag.
-            else:
-                label_ids.append(
-                    label_encoding_dict[label[word_idx]] if label_all_tokens else -100
-                )
-            previous_word_idx = word_idx
-
-        labels.append(label_ids)
-
-    tokenized_inputs["labels"] = labels
-    return tokenized_inputs
-
-
 train_dataset, test_dataset = get_un_token_dataset(
     "job_skill_ner_task/Openai_ner_task/data", 0.7
 )
-
 
 label_encoding_dict = {"O": 0, "B-Skill": 1, "I-Skill": 2}
 task = "ner"
@@ -140,7 +103,6 @@ model_checkpoint = "Babelscape/wikineural-multilingual-ner"
 batch_size = 16
 
 tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
-
 
 train_tokenized_datasets = train_dataset.map(tokenize_and_align_labels, batched=True)
 test_tokenized_datasets = test_dataset.map(tokenize_and_align_labels, batched=True)

@@ -1,16 +1,11 @@
 # use OpenAI GPT to extract information from job description
 import openai
 import pandas as pd
-from func import *
+from func import append_dict_to_csv, process_string
 from langchain.chains import LLMChain, SequentialChain, TransformChain
 from langchain.chat_models import ChatOpenAI
-from langchain.llms import OpenAI
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
-from langchain.prompts import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    PromptTemplate,
-)
+from langchain.prompts import PromptTemplate
 
 openai.api_key = "XXXXXX"
 openai.api_base = "XXXXXXX"
@@ -82,7 +77,7 @@ for i in range(len(data["jd"])):
         parse_dict["skill_nice_to_have"] = parsed_data["skill_nice_to_have"]
         parse_dict["welfare"] = parsed_data["welfare"]
         parse_dict["other"] = parsed_data["other"]
-    except:
+    except Exception:
         parse_dict["company_description"] = ""
         parse_dict["people_need"] = ""
         parse_dict["job_duty"] = ""

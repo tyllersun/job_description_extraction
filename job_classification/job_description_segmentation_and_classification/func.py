@@ -124,7 +124,7 @@ def random_pick_from_list_and_return_value(lst, list_of_lists_dict, i, loc):
             while count_valid_characters(value) == 0:
                 try:
                     value = list_of_lists_dict[lottery][i][update_loc(loc)]
-                except:
+                except Exception:
                     return random_pick_from_list_and_return_value(
                         lst, list_of_lists_dict, i, 0
                     )
@@ -185,7 +185,7 @@ def process_list_of_lists_neighbor(list_of_lists_dict, col, lottery_column):
 def add_trans_to_list(list_, string, lang, translator):
     try:
         list_.append(translator.translate(string, dest=lang).text)
-    except:
+    except Exception:
         print(translator.translate(string, dest=lang).text)
     return list_
 
