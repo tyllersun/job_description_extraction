@@ -1,9 +1,6 @@
-from typing import List
 import pandas as pd
 from punctuators.models import SBDModelONNX
-from func import *
-from datasets import Dataset
-from transformers import BertTokenizer
+from func import process_list_of_lists, dict_to_token_dataset, dict_to_dataset, convert_labels_to_int, process_list_of_lists_neighbor, process_list_of_lists_neighbor_trans, process_list_of_lists_neighbor_trans_create_people
 from transformers import TrainingArguments
 from transformers import AutoTokenizer
 from transformers import AutoModelForSequenceClassification
