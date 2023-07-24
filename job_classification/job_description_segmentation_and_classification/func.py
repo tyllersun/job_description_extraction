@@ -21,11 +21,14 @@ def process_list_of_lists(list_of_lists, col):
     return result
 
 def dict_to_dataset(data):
-    # Convert the dictionary into a list of dictionaries where each entry is an example with the label and corresponding feature
+    # Convert the dictionary into a list of
+    # dictionaries where each entry is an example with the label and corresponding feature
     examples = [{'label': label, 'text': feature} for label, features in data.items() for feature in features]
 
     # Load the examples into a Hugging Face dataset
-    dataset = Dataset.from_dict({ 'label': [example['label'] for example in examples], 'text': [example['text'] for example in examples] })
+    dataset = Dataset.from_dict(
+        {'label': [example['label'] for example in examples], 'text': [example['text'] for example in examples]}
+    )
 
     # Split the dataset into train and test sets (70% train, 30% test)
     dataset = dataset.train_test_split(test_size=0.3)
@@ -36,11 +39,14 @@ def tokenize_function(examples):
     return tokenizer(examples["text"], padding="max_length", truncation=True)
 
 def dict_to_token_dataset(data):
-    # Convert the dictionary into a list of dictionaries where each entry is an example with the label and corresponding text
+    # Convert the dictionary into a list of dictionaries
+    # where each entry is an example with the label and corresponding text
     examples = [{'label': label, 'text': text} for label, texts in data.items() for text in texts]
 
     # Load the examples into a Hugging Face dataset
-    dataset = Dataset.from_dict({'label': [example['label'] for example in examples], 'text': [example['text'] for example in examples]})
+    dataset = Dataset.from_dict(
+        {'label': [example['label'] for example in examples], 'text': [example['text'] for example in examples]}
+    )
     dataset = dataset.train_test_split(test_size=0.3)
     # Tokenize the dataset
     tokenized_dataset = dataset.map(tokenize_function, batched=True)
@@ -125,8 +131,12 @@ def process_list_of_lists_neighbor(list_of_lists_dict, col, lottery_column):
                 string = str(sublist[i - 1]) + " block " + string
 
             if i == len(sublist) - 1:
-                string = string + " block " + random_pick_from_list_and_return_value(lottery_column, list_of_lists_dict,
-                                                                                     i, -1)
+                string = string + " block " + \
+                         random_pick_from_list_and_return_value(
+                            lottery_column,
+                            list_of_lists_dict,
+                            i,
+                            -1)
             else:
                 string = string + str(sublist[i + 1])
             string = string.replace('⁇', '')  # 移除 '⁇'
@@ -171,12 +181,14 @@ def process_list_of_lists_neighbor_trans(list_of_lists_dict, col, lottery_column
                 translate_string.append(string)
             for string in translate_string:
                 if i == 0:
-                    string = random_pick_from_list_and_return_value(lottery_column, list_of_lists_dict, i, -1) + " block " + string
+                    string = random_pick_from_list_and_return_value(lottery_column, list_of_lists_dict, i, -1) \
+                             + " block " + string
                 else:
                     string = str(sublist[i-1]) + " block " + string
 
                 if i == len(sublist) -1:
-                    string = string + " block " + random_pick_from_list_and_return_value(lottery_column, list_of_lists_dict, i, -1)
+                    string = string + " block " + \
+                             random_pick_from_list_and_return_value(lottery_column, list_of_lists_dict, i, -1)
                 else:
                     string = string + str(sublist[i+1])
                 string = string.replace('⁇', '')  # 移除 '⁇'
@@ -242,8 +254,13 @@ def process_list_of_lists_neighbor_trans_create_people(list_of_lists_dict, col, 
                     string = str(sublist[i - 1]) + "[ block ]" + string
 
                 if i == len(sublist) - 1:
-                    string = string + "[ block ]" + random_pick_from_list_and_return_value(lottery_column,
-                                                                                           list_of_lists_dict, i, -1)
+                    string = string + "[ block ]" + \
+                             random_pick_from_list_and_return_value(
+                                lottery_column,
+                                list_of_lists_dict,
+                                i,
+                                -1
+                             )
                 else:
                     string = string + str(sublist[i + 1])
                 string = string.replace('⁇', '')  # 移除 '⁇'
