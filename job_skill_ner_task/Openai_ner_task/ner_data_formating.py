@@ -1,5 +1,6 @@
 import re
 
+
 def get_interval_union(intervals):
     """
     This function merges overlapping intervals.
@@ -28,7 +29,7 @@ def split_string_with_delimiters(string):
     :param string: The input string that is to be split.
     :return: A list of substrings resulting from splitting the input string at the specified delimiters.
     """
-    result = re.findall(r'[^-+/ .]+|[-+/.]', string)
+    result = re.findall(r"[^-+/ .]+|[-+/.]", string)
     return result
 
 
@@ -52,21 +53,23 @@ def find_string_in_list(output_list, target_string):
         output_list = [item.lower() for sublist in output_list for item in sublist]
     output_list = [item.lower() for item in output_list]
     # Split the target string into words if it contains spaces, otherwise treat it as a list of characters
-    target_list = target_string.lower().split() if ' ' in target_string else list(target_string)
+    target_list = (
+        target_string.lower().split() if " " in target_string else list(target_string)
+    )
     # Find the start and end index of the target_list in the output_list
     for i in range(len(output_list)):
-        if output_list[i:i + len(target_list)] == target_list:
+        if output_list[i : i + len(target_list)] == target_list:
             return [j for j in range(i, i + len(target_list))]
 
     target_list = split_string_with_delimiters(target_string)
     target_list = [item.lower() for item in target_list]
     for i in range(len(output_list)):
-        if output_list[i:i + len(target_list)] == target_list:
+        if output_list[i : i + len(target_list)] == target_list:
             return [j for j in range(i, i + len(target_list))]
     target_list = split_input_string(target_string)
     target_list = [item.lower() for item in target_list]
     for i in range(len(output_list)):
-        if output_list[i:i + len(target_list)] == target_list:
+        if output_list[i : i + len(target_list)] == target_list:
             return [j for j in range(i, i + len(target_list))]
     return -1  # Target string not found in the output list
 
@@ -97,20 +100,20 @@ def split_input_string(input_string):
         and each dividing point will be an item in the list.
     """
     output_list = []
-    temp_word = ''
+    temp_word = ""
     for character in input_string:
-        if re.match(r'[\u4e00-\u9fff]', character):  # Chinese character
+        if re.match(r"[\u4e00-\u9fff]", character):  # Chinese character
             if temp_word:
                 output_list.append(temp_word)
-                temp_word = ''
+                temp_word = ""
             output_list.append(character)
-        elif re.match(r'[a-zA-Z0-9]', character):  # English word
+        elif re.match(r"[a-zA-Z0-9]", character):  # English word
             temp_word += character
         else:  # Punctuation or space
             if temp_word:
                 output_list.append(temp_word)
-                temp_word = ''
-            if character != ' ':
+                temp_word = ""
+            if character != " ":
                 output_list.append(character)
 
     if temp_word:  # Append the last word if exists
@@ -121,23 +124,23 @@ def split_input_string(input_string):
 
 def indices_to_ner_tags(indices, num_of_tokens):
     # Start by labeling everything as 'O'
-    ner_tags = ['O'] * num_of_tokens
+    ner_tags = ["O"] * num_of_tokens
 
     # For each set of indices, change the corresponding labels
     for idx_set in indices:
         for i, idx in enumerate(idx_set):
             if i == 0:
-                ner_tags[idx] = 'B-Skill'
+                ner_tags[idx] = "B-Skill"
             else:
-                ner_tags[idx] = 'I-Skill'
+                ner_tags[idx] = "I-Skill"
     return ner_tags
 
 
 def get_ner_pair(test_sentence, output):
     """
-     input: question send to openai chat, openai_chat output
-     output: {"tokens": tokenized question , "ner_tags": ner label data}
-     ## pipeline function
+    input: question send to openai chat, openai_chat output
+    output: {"tokens": tokenized question , "ner_tags": ner label data}
+    ## pipeline function
     """
     tokens = split_input_string(test_sentence)
     indices = find_substring_positions(tokens, output)

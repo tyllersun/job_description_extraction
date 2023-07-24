@@ -1,20 +1,27 @@
 import ast
 import os
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+from datasets import Dataset, load_metric
 from sklearn.model_selection import train_test_split
-from datasets import Dataset
-from datasets import load_metric
-from transformers import AutoTokenizer
-from transformers import AutoModelForTokenClassification, TrainingArguments, Trainer
-from transformers import DataCollatorForTokenClassification
+from transformers import (
+    AutoModelForTokenClassification,
+    AutoTokenizer,
+    DataCollatorForTokenClassification,
+    Trainer,
+    TrainingArguments,
+)
+
 from job_skill_ner_task.Ner_model_task.label_list import label_list
 
 
 def tokenize_and_align_labels(examples):
     label_all_tokens = True
-    tokenizer.truncation_side='left'
-    tokenized_inputs = tokenizer(list(examples["tokens"]), truncation=True, is_split_into_words=True)
+    tokenizer.truncation_side = "left"
+    tokenized_inputs = tokenizer(
+        list(examples["tokens"]), truncation=True, is_split_into_words=True
+    )
 
     labels = []
     for i, label in enumerate(examples[f"{task}_tags"]):
@@ -26,7 +33,7 @@ def tokenize_and_align_labels(examples):
             # ignored in the loss function.
             if word_idx is None:
                 label_ids.append(-100)
-            elif label[word_idx] == '0':
+            elif label[word_idx] == "0":
                 label_ids.append(0)
             # We set the label for the first token of each word.
             elif word_idx != previous_word_idx:
@@ -34,24 +41,39 @@ def tokenize_and_align_labels(examples):
             # For the other tokens in a word, we set the label to either the current label or -100, depending on
             # the label_all_tokens flag.
             else:
-                label_ids.append(label_encoding_dict[label[word_idx]] if label_all_tokens else -100)
+                label_ids.append(
+                    label_encoding_dict[label[word_idx]] if label_all_tokens else -100
+                )
             previous_word_idx = word_idx
 
         labels.append(label_ids)
 
     tokenized_inputs["labels"] = labels
     return tokenized_inputs
+
+
 def get_all_tokens_and_ner_tags(directory):
     print(directory)
     print(os.listdir(directory))
-    return pd.concat([get_tokens_and_ner_tags(os.path.join(directory, filename)) for filename in os.listdir(directory)]).reset_index().drop('index', axis=1)
+    return (
+        pd.concat(
+            [
+                get_tokens_and_ner_tags(os.path.join(directory, filename))
+                for filename in os.listdir(directory)
+            ]
+        )
+        .reset_index()
+        .drop("index", axis=1)
+    )
+
 
 def get_tokens_and_ner_tags(filename):
     # Convert strings to lists
     data = pd.read_csv(filename)
-    data['tokens'] = data['tokens'].apply(ast.literal_eval)
-    data['ner_tags'] = data['ner_tags'].apply(ast.literal_eval)
+    data["tokens"] = data["tokens"].apply(ast.literal_eval)
+    data["ner_tags"] = data["ner_tags"].apply(ast.literal_eval)
     return data
+
 
 def get_un_token_dataset(directory, training_percentage):
     # Get all tokens and NER tags
@@ -60,7 +82,9 @@ def get_un_token_dataset(directory, training_percentage):
     # Shuffle the DataFrame
     df = df.sample(frac=1, random_state=42)
     # Split the DataFrame into training and test DataFrames
-    train_df, test_df = train_test_split(df, train_size=training_percentage, random_state=42)
+    train_df, test_df = train_test_split(
+        df, train_size=training_percentage, random_state=42
+    )
 
     # Create Huggingface Dataset objects
     train_dataset = Dataset.from_pandas(train_df)
@@ -69,11 +93,12 @@ def get_un_token_dataset(directory, training_percentage):
     return train_dataset, test_dataset
 
 
-
 def tokenize_and_align_labels(examples):
     label_all_tokens = True
-    tokenizer.truncation_side='left'
-    tokenized_inputs = tokenizer(list(examples["tokens"]), truncation=True, is_split_into_words=True)
+    tokenizer.truncation_side = "left"
+    tokenized_inputs = tokenizer(
+        list(examples["tokens"]), truncation=True, is_split_into_words=True
+    )
 
     labels = []
     for i, label in enumerate(examples[f"{task}_tags"]):
@@ -85,7 +110,7 @@ def tokenize_and_align_labels(examples):
             # ignored in the loss function.
             if word_idx is None:
                 label_ids.append(-100)
-            elif label[word_idx] == '0':
+            elif label[word_idx] == "0":
                 label_ids.append(0)
             # We set the label for the first token of each word.
             elif word_idx != previous_word_idx:
@@ -93,7 +118,9 @@ def tokenize_and_align_labels(examples):
             # For the other tokens in a word, we set the label to either the current label or -100, depending on
             # the label_all_tokens flag.
             else:
-                label_ids.append(label_encoding_dict[label[word_idx]] if label_all_tokens else -100)
+                label_ids.append(
+                    label_encoding_dict[label[word_idx]] if label_all_tokens else -100
+                )
             previous_word_idx = word_idx
 
         labels.append(label_ids)
@@ -102,10 +129,12 @@ def tokenize_and_align_labels(examples):
     return tokenized_inputs
 
 
-train_dataset, test_dataset = get_un_token_dataset("job_skill_ner_task/Openai_ner_task/data", 0.7)
+train_dataset, test_dataset = get_un_token_dataset(
+    "job_skill_ner_task/Openai_ner_task/data", 0.7
+)
 
 
-label_encoding_dict = {'O':0, "B-Skill": 1, "I-Skill": 2}
+label_encoding_dict = {"O": 0, "B-Skill": 1, "I-Skill": 2}
 task = "ner"
 model_checkpoint = "Babelscape/wikineural-multilingual-ner"
 batch_size = 16
@@ -116,11 +145,13 @@ tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 train_tokenized_datasets = train_dataset.map(tokenize_and_align_labels, batched=True)
 test_tokenized_datasets = test_dataset.map(tokenize_and_align_labels, batched=True)
 
-model = AutoModelForTokenClassification.from_pretrained(model_checkpoint, num_labels=len(label_list), ignore_mismatched_sizes=True)
+model = AutoModelForTokenClassification.from_pretrained(
+    model_checkpoint, num_labels=len(label_list), ignore_mismatched_sizes=True
+)
 
 args = TrainingArguments(
     f"test-{task}",
-    evaluation_strategy = "epoch",
+    evaluation_strategy="epoch",
     learning_rate=1e-4,
     per_device_train_batch_size=batch_size,
     per_device_eval_batch_size=batch_size,
@@ -154,6 +185,7 @@ def compute_metrics(p):
         "accuracy": results["overall_accuracy"],
     }
 
+
 trainer = Trainer(
     model,
     args,
@@ -161,13 +193,11 @@ trainer = Trainer(
     eval_dataset=test_tokenized_datasets,
     data_collator=data_collator,
     tokenizer=tokenizer,
-    compute_metrics=compute_metrics
+    compute_metrics=compute_metrics,
 )
 
 trainer.train()
 
 trainer.evaluate()
 
-trainer.save_model('un-ner.model')
-
-
+trainer.save_model("un-ner.model")
