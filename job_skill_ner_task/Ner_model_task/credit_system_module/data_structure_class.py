@@ -36,22 +36,22 @@ class ListDict:
 
 
 class credit_dict:
-  def __init__(self, credit):
-    self.dict_ = ListDict()
-    self.credit = credit
-    self.graduate = []
+    def __init__(self, credit):
+        self.dict_ = ListDict()
+        self.credit = credit
+        self.graduate = []
 
-  def add_dict(self, candidate):
-    if candidate in self.dict_:
-      self.dict_[candidate] += 1
-    else:
-      self.dict_[candidate] = 1
-    if self.dict_[candidate] >= self.credit:
-        if candidate not in self.graduate:
-          self.graduate.append(candidate)
+    def add_dict(self, candidate):
+        if candidate in self.dict_:
+            self.dict_[candidate] += 1
+        else:
+            self.dict_[candidate] = 1
+        if self.dict_[candidate] >= self.credit:
+            if candidate not in self.graduate:
+                self.graduate.append(candidate)
 
-  def get_keys(self):
-    return self.dict_.keys()
+    def get_keys(self):
+        return self.dict_.keys()
 
-  def get_graduate(self):
-    return self.graduate
+    def get_graduate(self):
+        return self.graduate
