@@ -1,21 +1,33 @@
 import sys
+
+from transformers import AutoModelForTokenClassification, AutoTokenizer
+
+from job_skill_ner_task.Ner_model_task.credit_system_module.data_structure_class import (
+    credit_dict,
+)
+from job_skill_ner_task.Ner_model_task.label_list import label_list
+from job_skill_ner_task.Ner_model_task.prediction_module.prediction_pipeline_func import (
+    prediction_pipeline,
+)
+from job_skill_ner_task.Ner_model_task.skill_search_module.data_structure import Trie
+from job_skill_ner_task.Ner_model_task.skill_search_module.load_process_func import (
+    read_skill_file,
+    split_input_string,
+)
+
 sys.path.insert(0, "./")
 
-from job_skill_ner_task.Ner_model_task.label_list import label_list
-from job_skill_ner_task.Ner_model_task.prediction_module.prediction_pipeline_func import prediction_pipeline
-from job_skill_ner_task.Ner_model_task.skill_search_module.load_process_func import read_skill_file, split_input_string
-from job_skill_ner_task.Ner_model_task.skill_search_module.data_structure import Trie
-from job_skill_ner_task.Ner_model_task.credit_system_module.data_structure_class import credit_dict
-from transformers import AutoTokenizer
-from transformers import AutoModelForTokenClassification
 
-
-tokenizer = AutoTokenizer.from_pretrained('./un-ner.model/')
-model = AutoModelForTokenClassification.from_pretrained('./un-ner.model/', num_labels=len(label_list))
+tokenizer = AutoTokenizer.from_pretrained("./un-ner.model/")
+model = AutoModelForTokenClassification.from_pretrained(
+    "./un-ner.model/", num_labels=len(label_list)
+)
 
 
 # load skill search system
-skills_list_of_list = read_skill_file("job_skill_ner_task/Openai_ner_task/skill_set/skill_dict.txt")
+skills_list_of_list = read_skill_file(
+    "job_skill_ner_task/Openai_ner_task/skill_set/skill_dict.txt"
+)
 skill_search_system = Trie()
 
 for outer_list in skills_list_of_list:
@@ -49,13 +61,13 @@ sentences = """
 
 """
 
-tokenized_words, format_prediction, credit_system, skill_search_system, predict_entities, not_same = \
-    prediction_pipeline(
-            sentences,
-            tokenizer,
-            model,
-            credit_system,
-            skill_search_system
-    )
+(
+    tokenized_words,
+    format_prediction,
+    credit_system,
+    skill_search_system,
+    predict_entities,
+    not_same,
+) = prediction_pipeline(sentences, tokenizer, model, credit_system, skill_search_system)
 
 print(predict_entities)

@@ -1,13 +1,14 @@
 # Dict Tree
 
+
 class TrieNode:
     def __init__(self):
         self.children = {}
-        self.hasword = False # only True if exist word,
+        self.hasword = False  # only True if exist word,
         # apple in dict, but app not in, False
 
-class Trie:
 
+class Trie:
     def __init__(self):
         self.root = TrieNode()
 
@@ -21,14 +22,13 @@ class Trie:
         cur.hasword = True
 
     def search(self, list_of_word: list) -> bool:
-        cur  = self.root
+        cur = self.root
         for c in list_of_word:
             c = c.lower()
             if c not in cur.children:
                 return False
             cur = cur.children[c]
         return cur.hasword
-
 
     def startsWith(self, prefix_list: list) -> bool:
         cur = self.root
@@ -38,4 +38,3 @@ class Trie:
                 return False
             cur = cur.children[c]
         return True
-
