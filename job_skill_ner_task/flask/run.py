@@ -1,22 +1,23 @@
 import sys
 
+sys.path.insert(0, "./")
 from flask import Flask, jsonify, request
 from transformers import AutoModelForTokenClassification, AutoTokenizer
 
-from job_skill_ner_task.Ner_model_task.credit_system_module.data_structure_class import (
+from Ner_model_task.credit_system_module.data_structure_class import (
     credit_dict,
 )
-from job_skill_ner_task.Ner_model_task.label_list import label_list
-from job_skill_ner_task.Ner_model_task.prediction_module.prediction_pipeline_func import (
+from Ner_model_task.label_list import label_list
+from Ner_model_task.prediction_module.prediction_pipeline_func import (
     prediction_pipeline,
 )
-from job_skill_ner_task.Ner_model_task.skill_search_module.data_structure import Trie
-from job_skill_ner_task.Ner_model_task.skill_search_module.load_process_func import (
+from Ner_model_task.skill_search_module.data_structure import Trie
+from Ner_model_task.skill_search_module.load_process_func import (
     read_skill_file,
     split_input_string,
 )
 
-sys.path.insert(0, "./")
+
 
 
 tokenizer = AutoTokenizer.from_pretrained("./un-ner.model/")
@@ -26,7 +27,7 @@ model = AutoModelForTokenClassification.from_pretrained(
 
 # load skill search system
 skills_list_of_list = read_skill_file(
-    "job_skill_ner_task/Openai_ner_task/skill_set/skill_dict.txt"
+    "Openai_ner_task/skill_set/skill_dict.txt"
 )
 global skill_search_system
 skill_search_system = Trie()
@@ -73,4 +74,4 @@ def postInput(credit_system=credit_system, skill_search_system=skill_search_syst
 
 if __name__ == "__main__":
     # do something here
-    app.run()
+    app.run(host="0.0.0.0", port=9874)
