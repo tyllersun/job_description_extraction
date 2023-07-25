@@ -130,13 +130,12 @@ def compute_metrics(p):
     predictions = np.argmax(predictions, axis=2)
 
     # Remove ignored index (special tokens)
-    l = 0
     true_predictions = [
-        [label_list[p] for (p, l) in zip(prediction, label) if l != -100]
+        [label_list[p] for (p, lab) in zip(prediction, label) if lab != -100]
         for prediction, label in zip(predictions, labels)
     ]
     true_labels = [
-        [label_list[l] for (p, l) in zip(prediction, label) if l != -100]
+        [label_list[p] for (p, lab) in zip(prediction, label) if lab != -100]
         for prediction, label in zip(predictions, labels)
     ]
 
