@@ -30,6 +30,10 @@ jobs:
           ruff --format=github --select=E9,F63,F7,F82 --target-version=py37 .
           # default set of ruff rules with GitHub Annotations
           ruff --format=github --target-version=py37 .
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v37
+      
       - name: Test with pytest
-        run: |
-          pytest
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: pytest ${{ steps.changed-files.outputs.all_changed_files }}
