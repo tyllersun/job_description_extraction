@@ -1,6 +1,6 @@
 import torch
 
-from job_skill_ner_task.Ner_model_task.label_list import label_list
+from Ner_model_task.label_list import label_list
 
 
 def cont_words_clean(predictions, processing_words):
