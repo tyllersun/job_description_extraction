@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - '**.py'
+    types: 
+      - added
+      - modified
 
 jobs:
   build:
