@@ -135,7 +135,7 @@ def compute_metrics(p):
         for prediction, label in zip(predictions, labels)
     ]
     true_labels = [
-        [label_list[l] for (p, lab) in zip(prediction, label) if lab != -100]
+        [label_list[p] for (p, lab) in zip(prediction, label) if lab != -100]
         for prediction, label in zip(predictions, labels)
     ]
 
