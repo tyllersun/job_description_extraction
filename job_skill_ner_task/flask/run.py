@@ -47,15 +47,8 @@ app = Flask(__name__)
 @app.route("/predict", methods=["POST"])
 def postInput(credit_system=credit_system, skill_search_system=skill_search_system):
     # 取得前端傳過來的數值
-    print("begin post")
-    if request.is_json:
-        print("is_json")
-    else:
-        print("not_json")
     insert_values = request.get_json()
-    print(insert_values)
     sentences = insert_values["sentences"]
-    print("in post")
 
     (
         tokenized_words,
@@ -67,7 +60,6 @@ def postInput(credit_system=credit_system, skill_search_system=skill_search_syst
     ) = prediction_pipeline(
         sentences, tokenizer, model, credit_system, skill_search_system
     )
-    print("end_post")
 
     return jsonify({"predict_entities": predict_entities})
 
