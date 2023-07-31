@@ -1,4 +1,4 @@
-# 技能提取系統 Skill Extraction System 
+# 技能提取系統 Skill Extraction System (Version 1)
 -- --
 ## 解決問題
 在眾多的職缺分析等項目當中，常常會需要抓取職缺對應到的技能點。但實際上，大多數的技能參雜在`job description`當中，需要手動標記取出。此外，`job description`中除了有中文的敘述外，亦有英文，這讓分辨起來更加困難。因此，此`模型API`主要可以快速的將職缺中的`技能`擷取出來，當遇到未標示成功的技能，未來也將自我訓練。除此之外，此模型目前可用於中文及日文當中。
@@ -36,4 +36,16 @@ API網址為 `./predict`
     ]
 }
 ```
+
+## 模型架構及步驟
+### training step
+1. 利用OpenAI的API將資料集中的資料取出`skill name`，並在資料集中找到該`skill name`及其對應的位置當中，並同時將該`skill name`加入到`skill name system`當中
+2. 將標記的資料集tokenize, embedding放入`NER`與訓練模型中進行`fine-tune`
+3. 進行模型輸出的簡易後處理，如少部分的`tag開頭`沒有被標記為`開頭`，反被標記為`中間`，故做修正
+4. (Version 2) 將有被標記的`skill name tag`但沒在`skill name system`的加入`candidate credit system`中，若滿一定次數，則會被加入到`skill name system`中
+5. (Version 2) 進行輸出後處理：將`token`進行比對，如果在`skill name system`中有存在，則進行標記，並記錄有被修改的資料，之後作為`fine tune`資料
+
+
+### Online step
+1. (version 3) ongoing
 
