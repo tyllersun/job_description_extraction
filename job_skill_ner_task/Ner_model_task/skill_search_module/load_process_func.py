@@ -1,18 +1,30 @@
 import re
 
 
-def read_skill_file(filepath):
+def read_skill_file(filepath, extra_skill=[]):
     with open(filepath, "r") as f:
         lines = f.readlines()
 
     skill_groups = []
+    skill_count_map = dict()
     for line in lines:
+        filter_skill = []
         # remove trailing newline character and split the line by tab character
         skills = line.strip("\n").split("\t")
         # remove any empty string resulted from split
         skills = [skill for skill in skills if skill]
-        skill_groups.append(skills)
+        for skill in skills:
+            if skill not in skill_count_map:
+                skill_count_map[skill] = 1
+                continue
 
+            if skill_count_map[skill] >= 10:
+                filter_skill.append(skill)
+            else:
+                skill_count_map[skill] += 1
+        skill_groups.append(filter_skill)
+    # 增加技能在這邊增加
+    skill_groups.append(extra_skill)
     return skill_groups
 
 
