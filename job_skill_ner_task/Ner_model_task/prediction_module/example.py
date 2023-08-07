@@ -1,21 +1,21 @@
 import sys
 
 from transformers import AutoModelForTokenClassification, AutoTokenizer
-
-from job_skill_ner_task.Ner_model_task.credit_system_module.data_structure_class import (
+sys.path.insert(0, "./")
+from Ner_model_task.credit_system_module.data_structure_class import (
     credit_dict,
 )
-from job_skill_ner_task.Ner_model_task.label_list import label_list
-from job_skill_ner_task.Ner_model_task.prediction_module.prediction_pipeline_func import (
+from Ner_model_task.label_list import label_list
+from Ner_model_task.prediction_module.prediction_pipeline_func import (
     prediction_pipeline,
 )
-from job_skill_ner_task.Ner_model_task.skill_search_module.data_structure import Trie
-from job_skill_ner_task.Ner_model_task.skill_search_module.load_process_func import (
+from Ner_model_task.skill_search_module.data_structure import Trie
+from Ner_model_task.skill_search_module.load_process_func import (
     read_skill_file,
     split_input_string,
 )
 
-sys.path.insert(0, "./")
+
 
 
 tokenizer = AutoTokenizer.from_pretrained("./un-ner.model/")
@@ -23,10 +23,19 @@ model = AutoModelForTokenClassification.from_pretrained(
     "./un-ner.model/", num_labels=len(label_list)
 )
 
-
+not_skill_list = ['溝通', '活動', '執行', '設計','科技', 'to', '分析', 'open', '基本', "服務", "基礎", '時間', '製作', '管理', '其他']
+extra_skill_list = ['Power BI',
+                    'Data Driven',
+                    '統計公式',
+                    "電腦視覺",
+                    "開源演算法",
+                    "肢體動作編輯",
+                    "機器學習",
+                    "open source", '演算法','專案管理', 'GA4','Big Data', 'Python']
 # load skill search system
 skills_list_of_list = read_skill_file(
-    "job_skill_ner_task/Openai_ner_task/skill_set/skill_dict.txt"
+    "Openai_ner_task/skill_set/skill_dict.txt",
+    extra_skill=extra_skill_list
 )
 skill_search_system = Trie()
 
@@ -34,40 +43,33 @@ for outer_list in skills_list_of_list:
     for inner_list in outer_list:
         skill_search_system.insert(split_input_string(inner_list))
 
-
 # load credit system
 credit_system = credit_dict(3)
 
 sentences = """
--負責前端技術研發工作
--參與、並協助定義前端研發工作流和開發規範
--建立前端框架核心功能元件，並能獨力解決對開發中遇到的技術問題
--可與後端工程師討論協作開發專案
--設計編寫API供後端工程師介接
--與後端工程師合作介接 RESTFul API
--熟悉 npx scss webpack. 懂得使用 material ui, core ui, element ui 尤佳.
--技術文件撰寫
+[About this job]
+1.	Identify the business and technical demands of clients and implement the tools, methodologies and architectures to the various first-party data tracking requirements
+2.	Explore & develop the advanced tracking data model prototype to improve first-party data product line by GA4, Firebase, GTM and BigQuery
+3.	Develop, operate, and ETL for data collection, cleansing, processing, storage, and analytics on Web/App user behavioral raw data
+4.	Develop data visualization dashboard to explore data insights and will participate in client meetings (if needed) and project executions to support the both business development and project delivery.
+5.	Write documents for architecture design and implementation
 
+[About you]
+1.	At least 2 years of experience in processing data with Python and SQL-like script, such as BigQuery
+2.	Experience in web analytics/tracking knowledges GA, GTM and Firebase
+3.	Experience in data visualization tools Tableau, Data studio
+4.	Expertise in hands-on ETL job design, components and modules development of data process
+5.	Effective problem-solving, analytical, and writing well-organized reports
+6.	Passionate at working in digital marketing industry and fast-moving startup environment
+7.	Fluent in English or Japanese (both oral and written)
 
-【職務條件】
--具有 Git 版本控制相關知識
--可獨立或與團隊合作，工作態度積極、負責，能配合公司規定
-
-【程式語言條件】
-1. 熟悉 HTML / CSS / JavaScript
-2. 熟悉前端框架 Vue (必要) /Vuex , Angular , Node.js
-3. 會使用figma / sketch / zeplin 等工具尤佳
-4. 有ui ux / 大型資料處理 / Google Map Api 經驗佳
-
+[More...]
+1.	Knowledge of web technologies HTML, CSS, JavaScript and SEM/SEO is a big plus
+2.	Strong cloud computing experience, such as GCP, AWS is a big plus
+3.	Experience in building and operating large scale distributed systems or applications is a plus
+4.	Expertise in Linux/Unix environments and familiar with shell scripting is a plus
 """
 
-(
-    tokenized_words,
-    format_prediction,
-    credit_system,
-    skill_search_system,
-    predict_entities,
-    not_same,
-) = prediction_pipeline(sentences, tokenizer, model, credit_system, skill_search_system)
+predict_entities = prediction_pipeline(sentences, tokenizer, model, credit_system, skill_search_system, not_skill_list)
 
 print(predict_entities)
