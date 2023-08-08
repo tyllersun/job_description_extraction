@@ -14,7 +14,7 @@ from Ner_model_task.skill_search_module.load_process_func import (
     read_skill_file,
     split_input_string,
 )
-
+from Ner_model_task.google_sheet_data.func import get_need_and_not_list
 
 
 
@@ -23,15 +23,9 @@ model = AutoModelForTokenClassification.from_pretrained(
     "./un-ner.model/", num_labels=len(label_list)
 )
 
-not_skill_list = ['溝通', '活動', '執行', '設計','科技', 'to', '分析', 'open', '基本', "服務", "基礎", '時間', '製作', '管理', '其他']
-extra_skill_list = ['Power BI',
-                    'Data Driven',
-                    '統計公式',
-                    "電腦視覺",
-                    "開源演算法",
-                    "肢體動作編輯",
-                    "機器學習",
-                    "open source", '演算法','專案管理', 'GA4','Big Data', 'Python']
+# load skill provide by public
+extra_skill_list, not_skill_list = get_need_and_not_list()
+
 # load skill search system
 skills_list_of_list = read_skill_file(
     "Openai_ner_task/skill_set/skill_dict.txt",
