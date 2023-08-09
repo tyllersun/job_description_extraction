@@ -14,7 +14,10 @@ from Ner_model_task.skill_search_module.load_process_func import (
     read_skill_file,
     split_input_string,
 )
-from Ner_model_task.google_sheet_data.func import get_need_and_not_list
+from Ner_model_task.google_sheet_data.func import (
+    get_need_and_not_list,
+    add_data_to_sheet,
+)
 
 
 
@@ -41,29 +44,26 @@ for outer_list in skills_list_of_list:
 credit_system = credit_dict(3)
 
 sentences = """
-[About this job]
-1.	Identify the business and technical demands of clients and implement the tools, methodologies and architectures to the various first-party data tracking requirements
-2.	Explore & develop the advanced tracking data model prototype to improve first-party data product line by GA4, Firebase, GTM and BigQuery
-3.	Develop, operate, and ETL for data collection, cleansing, processing, storage, and analytics on Web/App user behavioral raw data
-4.	Develop data visualization dashboard to explore data insights and will participate in client meetings (if needed) and project executions to support the both business development and project delivery.
-5.	Write documents for architecture design and implementation
+台大創創中心致力建構完整的新創與創新生態圈。創立於2013年，提供台灣新創加速器、孵化器輔導計畫，以六大輔導資源激發團隊成長：商業策略營運、企業合作專案、創業社群交流、新創人才媒合、關鍵資源介接、公關行銷曝光等，陪伴不同階段的團隊落實創意或創新構想、驗證為可行產品或服務方案；同時也提供中大型企業外部創新顧問服務，媒合並推進潛力新創與企業合作，以強化企業內部的新事業發展動能。
+公司理念
 
-[About you]
-1.	At least 2 years of experience in processing data with Python and SQL-like script, such as BigQuery
-2.	Experience in web analytics/tracking knowledges GA, GTM and Firebase
-3.	Experience in data visualization tools Tableau, Data studio
-4.	Expertise in hands-on ETL job design, components and modules development of data process
-5.	Effective problem-solving, analytical, and writing well-organized reports
-6.	Passionate at working in digital marketing industry and fast-moving startup environment
-7.	Fluent in English or Japanese (both oral and written)
+我們的工作跟累積信任有關，以及為了維持這份信任，所需執行的各種大小任務。了解團隊、了解團隊的產業與產品、發展專長、準確介紹合適的諮詢業師、合作夥伴與創創校友、設計適合創辦人有效吸收的實戰課程、設計讓創業家們自然互動交流的場域、以及規劃展演，看著團隊苦練之後站上 Demo 舞台，在他們氣力放盡的時候拍拍肩膀跟他乾一瓶啤酒。
+你說為什麼我們做這些事情？因為我們相信，幫助有潛力的創業團隊能夠對整體新創生態產生正向的影響。 如果你對於上述場景或理念感到興奮，你可能十分適合加入「協助新創團隊」的新創中介組織，我們在找你。
+公司福利
 
-[More...]
-1.	Knowledge of web technologies HTML, CSS, JavaScript and SEM/SEO is a big plus
-2.	Strong cloud computing experience, such as GCP, AWS is a big plus
-3.	Experience in building and operating large scale distributed systems or applications is a plus
-4.	Expertise in Linux/Unix environments and familiar with shell scripting is a plus
+〖在新創場域，我們希望你能擁有...〗
+• 不受限的發揮空間，自主管理，並且能夠隨時表達自己的想法
+• 融洽的工作氣氛，常與同事、新創團隊、導師們交流學習
+• Free Coffee & Snacks，不定期員工聚餐
+• 不定期Happy Hour、不定期創業團隊 / 創業人分享經驗
+• 創創中心舉辦活動 / 講座，自由參加，累積創業知識、學習各項技能
+〖正職員工〗
+• 年終獎金1.5個月
+• 週休二日/特休/年假
+• 員工進修補助
+
 """
 
 predict_entities = prediction_pipeline(sentences, tokenizer, model, credit_system, skill_search_system, not_skill_list)
-
+add_data_to_sheet(sentences, predict_entities)
 print(predict_entities)

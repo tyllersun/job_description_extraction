@@ -1,4 +1,5 @@
 import pandas as pd
+import requests
 
 def get_need_and_not_list():
   sheet_id = "18OtMuMx1-UUHEhz9bLVizqOwW4k04opMQo9kTKWcrcQ"
@@ -10,3 +11,18 @@ def get_need_and_not_list():
   need_list = [item.strip() for need in data['想增加的技能（技能與技能間請以","隔開）'] for item in need.split(",")]
   delete_list = [item.strip() for delete in data['想要移除的預測結果（請以","隔開）'] for item in delete.split(",")]
   return need_list, delete_list
+
+def add_data_to_sheet(sentences, predict_entities):
+  url = 'https://script.google.com/macros/s/AKfycbxZrEFWLRBz7mA--i8hweW4UWlInDPNOseD7zVtzNSaHXxSPxMDmBwpdsF7bRYKAbCE/exec'
+
+  # JSON data payload
+  data = {
+    "job_description": sentences,
+    "result": str(predict_entities)
+  }
+
+  # Make the POST request
+  response = requests.post(url, json=data)
+
+  # Print the response
+  print(response.text)
