@@ -3,7 +3,7 @@ import re
 from Ner_model_task.label_list import label_list
 
 
-def cont_words_clean(predictions, processing_words):
+def cont_words_clean(predictions, processing_words, skill_search_system):
     for i in range(
         len(processing_words) - 1, 0, -1
     ):  # Iterate from the last element to the first
@@ -11,10 +11,12 @@ def cont_words_clean(predictions, processing_words):
             processing_words[i - 1] += processing_words[i].lstrip(
                 "##"
             )  # Combine with the previous word
-            processing_words[i] = ""  # Empty the current word
+            processing_words[i] = "@"  # Empty the current word
             if predictions[i] == "B-Skill":
                 predictions[i] = "I-Skill"
                 predictions[i - 1] = "B-Skill"
+            if skill_search_system.search([predictions[i-1]]) and skill_search_system.startsWith([predictions[i+1]]):
+                predictions[i + 1] = "B-Skill"
     # Record the modified word and corresponding prediction
     return predictions, processing_words
 
@@ -44,7 +46,10 @@ def get_entities(tokens, ner_tags, not_skill_set):
                 entities = []
                 continue
             if entity:  # If there is an existing entity, add token to it
-                entity.append(token)
+                if entity[-1] == "@":
+                    entity.pop()
+                if token != "@":
+                    entity.append(token)
             else:  # Else, start a new entity (this handles the case where a tag sequence starts with I)
                 entity = [token]
         else:  # Outside of any entity
@@ -202,11 +207,10 @@ def prediction_pipeline(
         predictions = [label_list[i] for i in predictions]
         predictions_ = predictions.copy()
         words = tokenizer.batch_decode(tokens["input_ids"])
-        #print(words)
         processing_words = words.copy()
 
         # output processing and add to dict
-        predictions_, processing_words = cont_words_clean(predictions_, processing_words)
+        predictions_, processing_words = cont_words_clean(predictions_, processing_words, skill_search_system)
         words_, predictions_ = output_processing(words, predictions_, skill_search_system)
         words_, predictions_, credit_system, skill_search_system = entities_preprocess(
             words, predictions_, credit_system, skill_search_system
