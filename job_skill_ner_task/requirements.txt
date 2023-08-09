@@ -5,3 +5,4 @@ scikit_learn==1.2.2
 torch==2.0.1
 transformers==4.29.2
 Flask==2.3.2
+requests==2.29.0

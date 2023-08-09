@@ -17,7 +17,10 @@ from Ner_model_task.skill_search_module.load_process_func import (
     split_input_string,
 )
 
-from Ner_model_task.google_sheet_data.func import get_need_and_not_list
+from Ner_model_task.google_sheet_data.func import (
+    get_need_and_not_list,
+    add_data_to_sheet,
+)
 
 
 
@@ -71,6 +74,7 @@ def postInput(credit_system=credit_system, skill_search_system=skill_search_syst
     predict_entities = prediction_pipeline(
         sentences, tokenizer, model, credit_system, skill_search_system, not_skill_list
     )
+    add_data_to_sheet(sentences, predict_entities)
 
     return jsonify({"predict_entities": predict_entities})
 
