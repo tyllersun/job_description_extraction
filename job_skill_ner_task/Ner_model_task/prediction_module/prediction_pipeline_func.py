@@ -33,6 +33,16 @@ def get_entities(tokens, ner_tags, not_skill_set):
                 )
             entity = [token]  # Start a new entity
         elif tag.startswith("I"):  # Inside of entity
+            if entity and entity[-1] == '':
+                entities.append(
+                    "".join(entity)
+                    if all("\u4e00" <= char <= "\u9fff" for char in "".join(entity))
+                    else " ".join(entity)
+                )
+                if ner_tags[i+1].startswith("I"):
+                    ner_tags[i+1] = "B-Skill"
+                entities = []
+                continue
             if entity:  # If there is an existing entity, add token to it
                 entity.append(token)
             else:  # Else, start a new entity (this handles the case where a tag sequence starts with I)
@@ -55,7 +65,7 @@ def get_entities(tokens, ner_tags, not_skill_set):
         )
     final_entities = []
     for entity in entities:
-        if len(entity) != 1:
+        if len(entity) != 1 and entity != "":
             entity = entity.strip()
             prev = False
             str_ = ""
