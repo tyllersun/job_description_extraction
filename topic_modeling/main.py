@@ -4,6 +4,7 @@ from bertopic import BERTopic
 from sklearn.feature_extraction.text import CountVectorizer
 from sentence_transformers import SentenceTransformer
 import json
+import numpy as np
 
 # strongly recommend using GPU to run this scripts
 
