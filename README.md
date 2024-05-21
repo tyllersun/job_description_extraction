@@ -15,6 +15,7 @@
 本專案一共使用兩種方法來處理此問題。
 1. classification (Job Classification)
 2. Name entities recognization (Job Skill NER Task)
+3. Topic Model
 
 ### Classification (Job Classification)
 
